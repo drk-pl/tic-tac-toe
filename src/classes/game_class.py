@@ -92,28 +92,20 @@ class Game:
         self.__pygame.display.update()
 
     def player_move(self, board: object, player_sign: str):
-        player_moves = 0
-        for i in board.board:
-            if i == player_sign:
-                player_moves += 1
-        while True:
-            self.screen_fill(self.__colors['black'])
-            self.draw_board(board.board)
-            self.button_display('', 50, 80, 100, 100, board.update_board, args=(6, player_sign))
-            self.button_display('', 50, 180, 100, 100, board.update_board, args=(3, player_sign))
-            self.button_display('', 50, 280, 100, 100, board.update_board, args=(0, player_sign))
-            self.button_display('', 150, 80, 100, 100, board.update_board, args=(7, player_sign))
-            self.button_display('', 150, 180, 100, 100, board.update_board, args=(4, player_sign))
-            self.button_display('', 150, 280, 100, 100, board.update_board, args=(1, player_sign))
-            self.button_display('', 250, 80, 100, 100, board.update_board, args=(8, player_sign))
-            self.button_display('', 250, 180, 100, 100, board.update_board, args=(5, player_sign))
-            self.button_display('', 250, 280, 100, 100, board.update_board, args=(2, player_sign))
-            pmc = 0
-            for i in board.board:
-                if i == player_sign:
-                    pmc += 1
-            if pmc > player_moves:
-                break
-            self.events()
-            self.display_update()
+        self.button_display('', 50, 80, 100, 100, board.update_board, args=(6, player_sign))
+        self.button_display('', 50, 180, 100, 100, board.update_board, args=(3, player_sign))
+        self.button_display('', 50, 280, 100, 100, board.update_board, args=(0, player_sign))
+        self.button_display('', 150, 80, 100, 100, board.update_board, args=(7, player_sign))
+        self.button_display('', 150, 180, 100, 100, board.update_board, args=(4, player_sign))
+        self.button_display('', 150, 280, 100, 100, board.update_board, args=(1, player_sign))
+        self.button_display('', 250, 80, 100, 100, board.update_board, args=(8, player_sign))
+        self.button_display('', 250, 180, 100, 100, board.update_board, args=(5, player_sign))
+        self.button_display('', 250, 280, 100, 100, board.update_board, args=(2, player_sign))
+
+    def end(self, board: list, state: str):
+        self.__screen.fill(self.__colors["black"])
+        self.draw_board(board)
+        self.message_display(state, 'consolas', 15, self.__colors['white'], (self.__center[0], 40))
+        self.events()
+        self.display_update()
 

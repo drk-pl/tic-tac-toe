@@ -13,12 +13,13 @@ class Board:
     def win_combo(self) -> list:
         return self.__win_combo
 
-    def update_board(self, place: int, player: str) -> bool:
-        if self.__board[place] == ' ':
-            self.__board[place] = player
-            return True
-        else:
-            return False
+    def update_board(self, place: int, player: str, game_state: bool) -> bool:
+        if game_state:
+            if self.__board[place] == ' ':
+                self.__board[place] = player
+                return True
+            else:
+                return False
 
     def check_win(self, player) -> bool:
         for x, y, z in self.__win_combo:

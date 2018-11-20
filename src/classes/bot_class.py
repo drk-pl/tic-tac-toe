@@ -8,6 +8,7 @@ class Bot:
         self.__win_combo = win_combo
         self.__difficulty = 0
         self.__difficulty_dict = {0: 0.5, 1: 0.7, 2: 0.9, 3: 1}
+        self.__difficulty_lang = {0: 'Easy', 1: 'Medium', 2: 'Hard', 3: 'Expert'}
 
     @property
     def difficulty(self) -> int:
@@ -21,6 +22,10 @@ class Bot:
             self.__difficulty = 0
         else:
             self.__difficulty = lvl
+
+    @property
+    def difficulty_lang(self):
+        return self.__difficulty_lang
 
     def difficulty_up(self, lvl):
         self.__difficulty = lvl
@@ -77,7 +82,7 @@ class Bot:
                         corners_taken.append(i)
                 if len(corners_taken) == 0:
                     while True:
-                        corner = random.choice([0, 2, 6, 8])
+                        corner = random.choice(corners)
                         if board[corner] == ' ':
                             return corner
 

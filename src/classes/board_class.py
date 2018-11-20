@@ -32,3 +32,6 @@ class Board:
                 filled.append(i)
         if len(filled) == 9:
             return True
+
+    def reset(self):
+        self.__board = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']

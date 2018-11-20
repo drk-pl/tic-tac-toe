@@ -2,7 +2,7 @@ from src.classes.message_class import Message
 from src.classes.button_class import Button
 import pygame
 from pygame.locals import *
-
+import sys
 
 class Game:
 
@@ -33,6 +33,10 @@ class Game:
     @property
     def mouse_click(self):
         return self.__mouse_click
+
+    @mouse_click.setter
+    def mouse_click(self, val: tuple):
+        self.__mouse_click = val
 
     @property
     def colors(self):
@@ -94,7 +98,8 @@ class Game:
         events = self.__pygame.event.get()
         for e in events:
             if e.type == QUIT:
-                quit()
+                sys.exit(0)
+                # quit()
 
     def display_update(self):
         self.__pygame.display.update()

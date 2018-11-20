@@ -70,15 +70,13 @@ class Bot:
                     return 0
 
             if board[4] == player_sign:
-                while True:
-                    corners = [0, 2, 6, 8]
-                    corners_taken = []
-                    for i in corners:
-                        if board[i] == self.__sign:
-                            corners_taken.append(i)
-                    if len(corners_taken) != 0:
-                        break
-                    else:
+                corners = [0, 2, 6, 8]
+                corners_taken = []
+                for i in corners:
+                    if board[i] == self.__sign:
+                        corners_taken.append(i)
+                if len(corners_taken) == 0:
+                    while True:
                         corner = random.choice([0, 2, 6, 8])
                         if board[corner] == ' ':
                             return corner

@@ -3,6 +3,21 @@ from src.classes.button_class import Button
 import pygame
 from pygame.locals import *
 import sys
+import os
+
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = os.path.join(sys._MEIPASS, 'img')
+    except Exception:
+        base_path = os.path.abspath("../img")
+
+    return os.path.join(base_path, relative_path)
+
+
+background = resource_path('background.jpg')
 
 
 class Game:
@@ -24,7 +39,7 @@ class Game:
         self.__screen = ''
         self.__mouse_pos = ''
         self.__mouse_click = ''
-        self.__images = {'background': self.__pygame.image.load('../img/background.jpg')}
+        self.__images = {'background': self.__pygame.image.load(background)}
         self.__clock = self.__pygame.time.Clock()
 
     @property

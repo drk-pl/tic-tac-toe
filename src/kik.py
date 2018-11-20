@@ -4,12 +4,11 @@ from src.classes.bot_class import Bot
 from src.classes.game_class import Game
 
 
-def main():
+def main(reset=True):
 
     def game_loop(state=False):
         game_state = state
         bot_win = False
-        game.background_display()
         move = 0
         while True:
             game.background_display()
@@ -85,11 +84,13 @@ def main():
             game.button_display('ŚREDNI', game.center[0] - 50, game.center[1] + 65, 50, 30, bot.difficulty_up, args=(1,))
             game.button_display('TRUDNY', game.center[0], game.center[1] + 65, 50, 30, bot.difficulty_up, args=(2,))
             game.button_display('EXPERT', game.center[0] + 50, game.center[1] + 65, 50, 30, bot.difficulty_up, args=(3,))
+
             if player.sign == 'X':
                 bot.sign = 'O'
             else:
                 bot.sign = 'X'
-            game.button_display('START', game.center[0] + 100, game.center[1] + 100, 40, 60, game_loop, args=(True,))
+
+            game.button_display('START', game.center[0] + 100, game.center[1] + 100, 80, 60, game_loop, args=(True,))
             game.events()
             game.display_update()
 
@@ -100,8 +101,14 @@ def main():
             game.fill_board(board_list)
             game.get_mouse_click()
             game.get_mouse_pos()
-            game.message_display(state, 'Mistral', 40, game.colors['blue'], (game.center[0], game.center[1] + 100))
-            # [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [2, 4, 6], [0, 4, 8]]
+
+            if state == 'Remis':
+                game.message_display(state, 'Mistral', 40, game.colors['blue'], (game.center[0], game.center[1] + 100))
+            elif state == 'Wygrana':
+                game.message_display(state, 'Mistral', 40, game.colors['green'], (game.center[0], game.center[1] + 100))
+            elif state == 'Przegrana':
+                game.message_display(state, 'Mistral', 40, game.colors['red'], (game.center[0], game.center[1] + 100))
+
             if win == [0, 1, 2]:
                 game.win_line((135, 225), (315, 225))
             elif win == [3, 4, 5]:
@@ -119,7 +126,7 @@ def main():
             elif win == [0, 4, 8]:
                 game.win_line((315, 80), (135, 255))
 
-            game.button_display('MENU', game.center[0] + 100, game.center[1] + 100, 40, 60, main)
+            game.button_display('MENU', game.center[0] + 100, game.center[1] + 100, 80, 60, main)
             game.events()
             game.display_update()
 

@@ -6,10 +6,10 @@ class Button:
 
     def _draw(self, text: str, where: object, color: tuple, font_size: int, text_color: tuple, position: tuple, fill=False, invisible=False):
         # if not invisible:
-        #     if fill:
-        #         self.__pygame.draw.rect(where, color, position)
-        #     else:
-        #         self.__pygame.draw.rect(where, color, position, 1)
+        #    if fill:
+        #        self.__pygame.draw.rect(where, color, position)
+        #    else:
+        #        self.__pygame.draw.rect(where, color, position, 1)
         self.__message.display(text, "Mistral", font_size, text_color, (position[0] + position[2] / 2, position[1] + position[3] / 2))
 
     def display(self, name, x, y, w, h, fun, mouse_pos, mouse_click,

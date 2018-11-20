@@ -16,7 +16,8 @@ class Game:
                          'red': (255, 0, 0),
                          'gray': (183, 193, 204),
                          'yellow': (249, 217, 54),
-                         'blue': (0, 15, 85)}
+                         'blue': (0, 15, 85),
+                         'green': (50, 205, 50)}
         self.__message = ''
         self.__button = ''
         self.__screen = ''
@@ -63,11 +64,10 @@ class Game:
     def message_display(self, text, font_type, size, clr, pos):
         self.__message.display(text, font_type, size, clr, pos)
 
-    def button_display(self, name, x, y, w, h, fun, args=None, passive_fill=False, invisible=False):
+    def button_display(self, name, x, y, w, h, fun, args=None, passive_fill=False):
         self.__button.display(name, x, y, w, h, fun, self.__mouse_pos, self.__mouse_click, args,
                               passive_fill,
-                              invisible,
-                              active_text_color=self.__colors['blue'],
+                              active_text_color=self.__colors['red'],
                               passive_text_color=self.__colors['blue'])
 
     def win_line(self, start_pos: tuple, end_pos: tuple):
@@ -98,15 +98,15 @@ class Game:
 
     def display_update(self):
         self.__pygame.display.update()
-        self.__clock.tick(30)
+        self.__clock.tick(60)
 
     def player_move(self, board: object, player_sign: str):
-        self.button_display('', self.__center[0] - 90, self.__center[1] - 120, 60, 60, board.update_board, args=(6, player_sign), invisible=True)
-        self.button_display('', self.__center[0] - 90, self.__center[1] - 60, 60, 60, board.update_board, args=(3, player_sign), invisible=True)
-        self.button_display('', self.__center[0] - 90, self.__center[1], 60, 60, board.update_board, args=(0, player_sign), invisible=True)
-        self.button_display('', self.__center[0] - 30, self.__center[1] - 120, 60, 60, board.update_board, args=(7, player_sign), invisible=True)
-        self.button_display('', self.__center[0] - 30, self.__center[1] - 60, 60, 60, board.update_board, args=(4, player_sign), invisible=True)
-        self.button_display('', self.__center[0] - 30, self.__center[1], 60, 60, board.update_board, args=(1, player_sign), invisible=True)
-        self.button_display('', self.__center[0] + 30, self.__center[1] - 120, 60, 60, board.update_board, args=(8, player_sign), invisible=True)
-        self.button_display('', self.__center[0] + 30, self.__center[1] - 60, 60, 60, board.update_board, args=(5, player_sign), invisible=True)
-        self.button_display('', self.__center[0] + 30, self.__center[1], 60, 60, board.update_board, args=(2, player_sign), invisible=True)
+        self.button_display('', self.__center[0] - 90, self.__center[1] - 120, 60, 60, board.update_board, args=(6, player_sign))
+        self.button_display('', self.__center[0] - 90, self.__center[1] - 60, 60, 60, board.update_board, args=(3, player_sign))
+        self.button_display('', self.__center[0] - 90, self.__center[1], 60, 60, board.update_board, args=(0, player_sign))
+        self.button_display('', self.__center[0] - 30, self.__center[1] - 120, 60, 60, board.update_board, args=(7, player_sign))
+        self.button_display('', self.__center[0] - 30, self.__center[1] - 60, 60, 60, board.update_board, args=(4, player_sign))
+        self.button_display('', self.__center[0] - 30, self.__center[1], 60, 60, board.update_board, args=(1, player_sign))
+        self.button_display('', self.__center[0] + 30, self.__center[1] - 120, 60, 60, board.update_board, args=(8, player_sign))
+        self.button_display('', self.__center[0] + 30, self.__center[1] - 60, 60, 60, board.update_board, args=(5, player_sign))
+        self.button_display('', self.__center[0] + 30, self.__center[1], 60, 60, board.update_board, args=(2, player_sign))

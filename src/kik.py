@@ -135,7 +135,6 @@ def end(board_list: list, state: str, win: list):
 def main(reset=True):
     if reset:
         board.reset()
-        # game.init()
     main_menu()
 
 

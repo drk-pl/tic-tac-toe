@@ -7,7 +7,7 @@ class Bot:
         self.__sign = ''
         self.__win_combo = win_combo
         self.__difficulty = 0
-        self.__difficulty_dict = {0: 0.5, 1: 0.7, 2: 0.9, 3: 1}
+        self.__difficulty_dict = {0: 0.45, 1: 0.65, 2: 0.8, 3: 1}
         self.__difficulty_lang = {0: 'Easy', 1: 'Medium', 2: 'Hard', 3: 'Expert'}
 
     @property
@@ -39,59 +39,85 @@ class Bot:
     @sign.setter
     def sign(self, new_sign: str):
         self.__sign = new_sign
+
+    @staticmethod
+    def __get_board_copy(board: list) -> list:
+        board_copy = []
+        for i in board:
+            board_copy.append(i)
+        return board_copy
+
+    def __test_win_move(self, board: list, sign, place) -> bool:
+        board_copy = self.__get_board_copy(board)
+        board_copy[place] = sign
+        return self.__check_win(board_copy, sign)
+
+    def __check_win(self, board: list, player: str) -> bool:
+        for x, y, z in self.__win_combo:
+            if board[x] == board[y] == board[z] == player:
+                return True
+
+    @staticmethod
+    def __check_tie(board: list) -> bool:
+        return ' ' not in board
+
+    def __test_fork_move(self, board: list, sign: str, place: int) -> bool:
+        board_copy = self.__get_board_copy(board)
+        board_copy[place] = sign
+        winning_moves = 0
+        for i in range(9):
+            if self.__test_win_move(board_copy, sign, i) and board_copy[i] == ' ':
+                winning_moves += 1
+        return winning_moves >= 2
         
-    def move(self, board: list, player_sign) -> int:
+    def move(self, board: list, player_sign: str) -> int:
         mistake_chance = random.random()
         max_chance = self.__difficulty_dict[self.__difficulty]
         if 0 <= mistake_chance <= max_chance:
-            for x, y, z in self.__win_combo:
-                if board[x] == self.__sign and board[y] == self.__sign and board[z] == ' ':
-                    return z
-                if board[x] == self.__sign and board[z] == self.__sign and board[y] == ' ':
-                    return y
-                if board[z] == self.__sign and board[y] == self.__sign and board[x] == ' ':
-                    return x
 
-            for x, y, z in self.__win_combo:
-                if board[x] == player_sign and board[y] == player_sign and board[z] == ' ':
-                    return z
-                if board[x] == player_sign and board[z] == player_sign and board[y] == ' ':
-                    return y
-                if board[z] == player_sign and board[y] == player_sign and board[x] == ' ':
-                    return x
+            # check for bot win possibility
+            for i in range(9):
+                if board[i] == ' ' and self.__test_win_move(board, self.__sign, i):
+                    return i
 
-            if board[0] == board[8] == player_sign or board[2] == board[6] == player_sign:
-                return random.choice([1, 3, 5, 7])
+            # check for player win possibility
+            for i in range(9):
+                if board[i] == ' ' and self.__test_win_move(board, player_sign, i):
+                    return i
 
-            if board[3] == board[7] == player_sign:
-                if board[6] == ' ':
-                    return 6
-            elif board[7] == board[5] == player_sign:
-                if board[8] == ' ':
-                    return 8
-            elif board[5] == board[1] == player_sign:
-                if board[2] == ' ':
-                    return 2
-            elif board[1] == board[3] == player_sign:
-                if board[0] == ' ':
-                    return 0
+            # check bot fork opportunities
+            for i in range(9):
+                if board[i] == ' ' and self.__test_fork_move(board, self.__sign, i):
+                    return i
 
-            if board[4] == player_sign:
-                corners = [0, 2, 6, 8]
-                corners_taken = []
-                for i in corners:
-                    if board[i] == self.__sign:
-                        corners_taken.append(i)
-                if len(corners_taken) == 0:
-                    while True:
-                        corner = random.choice(corners)
-                        if board[corner] == ' ':
-                            return corner
+            # check player fork opportunities
+            player_forks = 0
+            for i in range(9):
+                if board[i] == ' ' and self.__test_fork_move(board, player_sign, i):
+                    player_forks += 1
+                    temp_move = i
+            if player_forks == 1:
+                return temp_move
+            elif player_forks == 2:
+                for i in ([1, 3, 5, 7]):
+                    if board[i] == ' ':
+                        return i
 
+            # play center
             if board[4] == ' ':
                 return 4
 
-        while True:
-            rest = random.choice([0, 1, 2, 3, 4, 5, 6, 7, 8])
-            if board[rest] == ' ':
-                return rest
+            # play corner
+            for i in [0, 2, 6, 8]:
+                if board[i] == ' ':
+                    return i
+
+            # play side
+            for i in [1, 3, 5, 7]:
+                if board[i] == ' ':
+                    return i
+        else:
+            while True:
+                pick = random.choice([0, 1, 2, 3, 4, 5, 6, 7, 8])
+                if board[pick] == ' ':
+                    return pick

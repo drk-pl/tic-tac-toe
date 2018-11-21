@@ -24,11 +24,13 @@ class Bot:
             self.__difficulty = lvl
 
     @property
-    def difficulty_lang(self):
+    def difficulty_lang(self) -> dict:
         return self.__difficulty_lang
 
-    def difficulty_up(self, lvl):
-        self.__difficulty = lvl
+    def difficulty_up(self):
+        self.__difficulty += 1
+        if self.__difficulty > 3:
+            self.__difficulty = 0
 
     @property
     def sign(self) -> str:

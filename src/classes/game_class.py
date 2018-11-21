@@ -1,5 +1,3 @@
-from src.classes.message_class import Message
-from src.classes.button_class import Button
 import pygame
 from pygame.locals import *
 import sys
@@ -7,12 +5,10 @@ import os
 
 
 def resource_path(relative_path):
-    """ Get absolute path to resource, works for dev and for PyInstaller """
     try:
-        # PyInstaller creates a temp folder and stores path in _MEIPASS
         base_path = os.path.join(sys._MEIPASS, 'img')
     except Exception:
-        base_path = os.path.abspath("../img")
+        base_path = os.path.abspath(os.path.join("..", "img"))
 
     return os.path.join(base_path, relative_path)
 
@@ -37,17 +33,18 @@ class Game:
         self.__message = ''
         self.__button = ''
         self.__screen = ''
-        self.__mouse_pos = ''
-        self.__mouse_click = ''
+        self.__mouse_pos = ()
+        self.__mouse_click = ()
         self.__images = {'background': self.__pygame.image.load(background)}
         self.__clock = self.__pygame.time.Clock()
+        self.__font_type = 'Mistral'
 
     @property
-    def mouse_pos(self):
+    def mouse_pos(self) -> tuple:
         return self.__mouse_pos
 
     @property
-    def mouse_click(self):
+    def mouse_click(self) -> tuple:
         return self.__mouse_click
 
     @mouse_click.setter
@@ -55,11 +52,11 @@ class Game:
         self.__mouse_click = val
 
     @property
-    def colors(self):
+    def colors(self) -> dict:
         return self.__colors
 
     @property
-    def center(self):
+    def center(self) -> tuple:
         return self.__center
 
     def screen_fill(self, clr):
@@ -74,35 +71,27 @@ class Game:
     def background_display(self):
         self.__screen.blit(self.__images['background'], (0, 0))
 
-    def init(self):
+    def init(self, lang: dict):
         self.__pygame.init()
         self.__screen = self.__pygame.display.set_mode((self.__resolution['width'], self.__resolution['height']))
-        self.__message = Message(self.__screen, self.__pygame.font)
-        self.__button = Button(self.__message, self.__pygame, self.__screen)
-        self.__pygame.display.set_caption("Kółko i krzyżyk")
+        self.__pygame.display.set_caption(lang['title'])
 
-    def message_display(self, text, font_type, size, clr, pos):
-        self.__message.display(text, font_type, size, clr, pos)
-
-    def button_display(self, name, x, y, w, h, fun, args=None, passive_fill=False):
-        self.__button.display(name, x, y, w, h, fun, self.__mouse_pos, self.__mouse_click, args,
-                              passive_fill,
-                              active_text_color=self.__colors['red'],
-                              passive_text_color=self.__colors['blue'])
+    def caption_change(self, lang: dict):
+        self.__pygame.display.set_caption(lang['title'])
 
     def win_line(self, start_pos: tuple, end_pos: tuple):
         self.__pygame.draw.line(self.__screen, self.__colors['red'], start_pos, end_pos, 4)
 
     def fill_board(self, board: list):
-        self.__message.display(board[6], "Mistral", 30, self.__colors['blue'], (self.__center[0] - 60, self.__center[1] - 90))
-        self.__message.display(board[3], "Mistral", 30, self.__colors['blue'], (self.__center[0] - 60, self.__center[1] - 30))
-        self.__message.display(board[0], "Mistral", 30, self.__colors['blue'], (self.__center[0] - 60, self.__center[1] + 30))
-        self.__message.display(board[7], "Mistral", 30, self.__colors['blue'], (self.__center[0], self.__center[1] - 90))
-        self.__message.display(board[4], "Mistral", 30, self.__colors['blue'], (self.__center[0], self.__center[1] - 30))
-        self.__message.display(board[1], "Mistral", 30, self.__colors['blue'], (self.__center[0], self.__center[1] + 30))
-        self.__message.display(board[8], "Mistral", 30, self.__colors['blue'], (self.__center[0] + 60, self.__center[1] - 90))
-        self.__message.display(board[5], "Mistral", 30, self.__colors['blue'], (self.__center[0] + 60, self.__center[1] - 30))
-        self.__message.display(board[2], "Mistral", 30, self.__colors['blue'], (self.__center[0] + 60, self.__center[1] + 30))
+        self.message_display(board[6], self.__font_type, 30, self.__colors['blue'], (self.__center[0] - 60, self.__center[1] - 90))
+        self.message_display(board[3], self.__font_type, 30, self.__colors['blue'], (self.__center[0] - 60, self.__center[1] - 30))
+        self.message_display(board[0], self.__font_type, 30, self.__colors['blue'], (self.__center[0] - 60, self.__center[1] + 30))
+        self.message_display(board[7], self.__font_type, 30, self.__colors['blue'], (self.__center[0], self.__center[1] - 90))
+        self.message_display(board[4], self.__font_type, 30, self.__colors['blue'], (self.__center[0], self.__center[1] - 30))
+        self.message_display(board[1], self.__font_type, 30, self.__colors['blue'], (self.__center[0], self.__center[1] + 30))
+        self.message_display(board[8], self.__font_type, 30, self.__colors['blue'], (self.__center[0] + 60, self.__center[1] - 90))
+        self.message_display(board[5], self.__font_type, 30, self.__colors['blue'], (self.__center[0] + 60, self.__center[1] - 30))
+        self.message_display(board[2], self.__font_type, 30, self.__colors['blue'], (self.__center[0] + 60, self.__center[1] + 30))
 
     def draw_board(self):
         self.__pygame.draw.line(self.__screen, self.__colors['blue'], (self.__center[0] - 30, self.__center[1] - 120), (self.__center[0] - 30, self.__center[1] + 60), 4)
@@ -115,7 +104,6 @@ class Game:
         for e in events:
             if e.type == QUIT:
                 sys.exit(0)
-                # quit()
 
     def display_update(self):
         self.__pygame.display.update()
@@ -131,3 +119,28 @@ class Game:
         self.button_display('', self.__center[0] + 30, self.__center[1] - 120, 60, 60, board.update_board, args=(8, player_sign))
         self.button_display('', self.__center[0] + 30, self.__center[1] - 60, 60, 60, board.update_board, args=(5, player_sign))
         self.button_display('', self.__center[0] + 30, self.__center[1], 60, 60, board.update_board, args=(2, player_sign))
+
+    def message_display(self, text, font_type, size, clr, pos):
+        my_font = self.__pygame.font.SysFont(font_type, size)
+        label = my_font.render(text, 1, clr)
+        label_rect = label.get_rect(center=pos)
+        self.__screen.blit(label, label_rect)
+
+    def button_display(self, name: str, x: int, y: int, w: int, h: int, fun, args=None):
+        text = h // 2
+        if x < self.__mouse_pos[0] < x + w and y < self.__mouse_pos[1] < y + h:
+            self.message_display(name, self.__font_type, int(text + text * 0.2), self.__colors['red'], (x + w / 2, y + h / 3))
+            if self.__mouse_click[0] == 1:
+                br = False
+                while not br:
+                    events = self.__pygame.event.get()
+                    for e in events:
+                        if e.type == MOUSEBUTTONUP:
+                            if args:
+                                fun(*args)
+                                br = True
+                            else:
+                                fun()
+                                br = True
+        else:
+            self.message_display(name, self.__font_type, text, self.__colors['blue'], (x + w / 2, y + h / 3))

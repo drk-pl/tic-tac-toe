@@ -11,8 +11,9 @@ class Player:
     def sign(self, new_sign: str):
         self.__sign = new_sign
 
-    def sign_change_x(self):
-        self.__sign = 'X'
+    def sign_change(self):
+        if self.__sign == 'O':
+            self.__sign = 'X'
+        elif self.__sign == 'X':
+            self.__sign = 'O'
 
-    def sign_change_o(self):
-        self.__sign = 'O'

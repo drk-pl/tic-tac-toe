@@ -7,7 +7,7 @@ class Bot:
         self.__sign = ''
         self.__win_combo = win_combo
         self.__difficulty = 0
-        self.__difficulty_dict = {0: 0.45, 1: 0.65, 2: 0.8, 3: 1}
+        self.__difficulty_dict = {0: 0.45, 1: 0.65, 2: 0.8, 3: 0.95}
         self.__difficulty_lang = {0: 'Easy', 1: 'Medium', 2: 'Hard', 3: 'Expert'}
 
     @property
@@ -71,26 +71,34 @@ class Bot:
         return winning_moves >= 2
         
     def move(self, board: list, player_sign: str) -> int:
-        mistake_chance = random.random()
+        # mistake_chance = random.random()
         max_chance = self.__difficulty_dict[self.__difficulty]
-        if 0 <= mistake_chance <= max_chance:
+        # if 0 <= mistake_chance <= max_chance:
 
-            # check for bot win possibility
+        # check for bot win possibility
+        mistake_chance = random.random()
+        if 0 <= mistake_chance <= max_chance:
             for i in range(9):
                 if board[i] == ' ' and self.__test_win_move(board, self.__sign, i):
                     return i
 
-            # check for player win possibility
+        # check for player win possibility
+        mistake_chance = random.random()
+        if 0 <= mistake_chance <= max_chance:
             for i in range(9):
                 if board[i] == ' ' and self.__test_win_move(board, player_sign, i):
                     return i
 
-            # check bot fork opportunities
+        # check bot fork opportunities
+        mistake_chance = random.random()
+        if 0 <= mistake_chance <= max_chance:
             for i in range(9):
                 if board[i] == ' ' and self.__test_fork_move(board, self.__sign, i):
                     return i
 
-            # check player fork opportunities
+        # check player fork opportunities
+        mistake_chance = random.random()
+        if 0 <= mistake_chance <= max_chance:
             player_forks = 0
             for i in range(9):
                 if board[i] == ' ' and self.__test_fork_move(board, player_sign, i):
@@ -103,21 +111,27 @@ class Bot:
                     if board[i] == ' ':
                         return i
 
-            # play center
+        # play center
+        mistake_chance = random.random()
+        if 0 <= mistake_chance <= max_chance:
             if board[4] == ' ':
                 return 4
 
-            # play corner
+        # play corner
+        mistake_chance = random.random()
+        if 0 <= mistake_chance <= max_chance:
             for i in [0, 2, 6, 8]:
                 if board[i] == ' ':
                     return i
 
-            # play side
+        # play side
+        mistake_chance = random.random()
+        if 0 <= mistake_chance <= max_chance:
             for i in [1, 3, 5, 7]:
                 if board[i] == ' ':
                     return i
-        else:
-            while True:
-                pick = random.choice([0, 1, 2, 3, 4, 5, 6, 7, 8])
-                if board[pick] == ' ':
-                    return pick
+
+        while True:
+            pick = random.choice([0, 1, 2, 3, 4, 5, 6, 7, 8])
+            if board[pick] == ' ':
+                return pick

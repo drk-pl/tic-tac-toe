@@ -71,7 +71,7 @@ def game_loop(state=False):
 def main_menu():
     global lang, difficulty
     while True:
-        difficulty = {0: current_lang['easy'], 1: current_lang['medium'], 2: current_lang['hard'], 3: current_lang['expert']}
+        difficulty = {0: current_lang['easy'], 1: current_lang['medium'], 2: current_lang['hard'], 3: current_lang['expert'], 4: current_lang['unbeatable']}
         game.get_mouse_click()
         game.get_mouse_pos()
         game.background_display()
@@ -89,7 +89,7 @@ def main_menu():
             bot.sign = 'O'
         else:
             bot.sign = 'X'
-        game.button_display(f"{current_lang['start'].upper()}", game.center[0] + 90, game.center[1] + 110, 80, 60, game_loop, args=(True,))
+        game.button_display(f"{current_lang['start'].upper()}", game.center[0] + 90, game.center[1] + 115, 80, 60, game_loop, args=(True,))
         game.events()
         game.display_update()
 
@@ -126,8 +126,8 @@ def end(board_list: list, state: str, win: list):
             game.win_line((135, 80), (315, 255))
         elif win == [0, 4, 8]:
             game.win_line((315, 80), (135, 255))
-        game.button_display(f"{current_lang['menu'].upper()}", game.center[0] - 140, game.center[1] + 110, 80, 60, main)
-        game.button_display(f"{current_lang['again'].upper()}", game.center[0] + 90, game.center[1] + 110, 80, 60, again)
+        game.button_display(f"{current_lang['menu'].upper()}", game.center[0] - 140, game.center[1] + 115, 80, 60, main)
+        game.button_display(f"{current_lang['again'].upper()}", game.center[0] + 90, game.center[1] + 115, 80, 60, again)
         game.events()
         game.display_update()
 
@@ -158,7 +158,7 @@ current_lang = language[lang]
 board = Board()
 player = Player()
 bot = Bot(board.win_combo)
-difficulty = {0: current_lang['easy'], 1: current_lang['medium'], 2: current_lang['hard'], 3: current_lang['expert']}
+difficulty = {0: current_lang['easy'], 1: current_lang['medium'], 2: current_lang['hard'], 3: current_lang['expert'], 4: current_lang['unbeatable']}
 game = Game()
 game.init(current_lang)
 

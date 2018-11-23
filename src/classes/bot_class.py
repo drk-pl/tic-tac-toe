@@ -7,8 +7,8 @@ class Bot:
         self.__sign = ''
         self.__win_combo = win_combo
         self.__difficulty = 0
-        self.__difficulty_dict = {0: 0.45, 1: 0.65, 2: 0.8, 3: 0.95}
-        self.__difficulty_lang = {0: 'Easy', 1: 'Medium', 2: 'Hard', 3: 'Expert'}
+        self.__difficulty_dict = {0: 0.45, 1: 0.65, 2: 0.8, 3: 0.95, 4: 1}
+        self.__difficulty_lang = {0: 'Easy', 1: 'Medium', 2: 'Hard', 3: 'Expert', 4: 'Unbeateable'}
 
     @property
     def difficulty(self) -> int:
@@ -16,8 +16,8 @@ class Bot:
 
     @difficulty.setter
     def difficulty(self, lvl: int):
-        if lvl > 3:
-            self.__difficulty = 3
+        if lvl > 4:
+            self.__difficulty = 4
         elif lvl < 0:
             self.__difficulty = 0
         else:
@@ -29,7 +29,7 @@ class Bot:
 
     def difficulty_up(self):
         self.__difficulty += 1
-        if self.__difficulty > 3:
+        if self.__difficulty > 4:
             self.__difficulty = 0
 
     @property
@@ -112,24 +112,28 @@ class Bot:
                         return i
 
         # play center
-        mistake_chance = random.random()
-        if 0 <= mistake_chance <= max_chance:
-            if board[4] == ' ':
-                return 4
+        first_move_play = random.random()
+        if 0 <= first_move_play <= 0.5:
+            mistake_chance = random.random()
+            if 0 <= mistake_chance <= max_chance:
+                if board[4] == ' ':
+                    return 4
 
         # play corner
-        mistake_chance = random.random()
-        if 0 <= mistake_chance <= max_chance:
-            for i in [0, 2, 6, 8]:
-                if board[i] == ' ':
-                    return i
+        if 0.5 < first_move_play <= 0.75:
+            mistake_chance = random.random()
+            if 0 <= mistake_chance <= max_chance:
+                for i in [0, 2, 6, 8]:
+                    if board[i] == ' ':
+                        return i
 
         # play side
-        mistake_chance = random.random()
-        if 0 <= mistake_chance <= max_chance:
-            for i in [1, 3, 5, 7]:
-                if board[i] == ' ':
-                    return i
+        if 0.75 < first_move_play <= 1:
+            mistake_chance = random.random()
+            if 0 <= mistake_chance <= max_chance:
+                for i in [1, 3, 5, 7]:
+                    if board[i] == ' ':
+                        return i
 
         while True:
             pick = random.choice([0, 1, 2, 3, 4, 5, 6, 7, 8])

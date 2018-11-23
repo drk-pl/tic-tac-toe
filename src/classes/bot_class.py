@@ -112,28 +112,24 @@ class Bot:
                         return i
 
         # play center
-        first_move_play = random.random()
-        if 0 <= first_move_play <= 0.5:
-            mistake_chance = random.random()
-            if 0 <= mistake_chance <= max_chance:
-                if board[4] == ' ':
-                    return 4
+        mistake_chance = random.random()
+        if 0 <= mistake_chance <= max_chance:
+            if board[4] == ' ':
+                return 4
 
         # play corner
-        if 0.5 < first_move_play <= 0.75:
-            mistake_chance = random.random()
-            if 0 <= mistake_chance <= max_chance:
-                for i in [0, 2, 6, 8]:
-                    if board[i] == ' ':
-                        return i
+        mistake_chance = random.random()
+        if 0 <= mistake_chance <= max_chance:
+            for i in [0, 2, 6, 8]:
+                if board[i] == ' ':
+                    return i
 
         # play side
-        if 0.75 < first_move_play <= 1:
-            mistake_chance = random.random()
-            if 0 <= mistake_chance <= max_chance:
-                for i in [1, 3, 5, 7]:
-                    if board[i] == ' ':
-                        return i
+        mistake_chance = random.random()
+        if 0 <= mistake_chance <= max_chance:
+            for i in [1, 3, 5, 7]:
+                if board[i] == ' ':
+                    return i
 
         while True:
             pick = random.choice([0, 1, 2, 3, 4, 5, 6, 7, 8])

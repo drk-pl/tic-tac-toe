@@ -71,19 +71,23 @@ def game_loop(state=False):
 def main_menu():
     global lang, difficulty
     while True:
-        difficulty = {0: current_lang['easy'], 1: current_lang['medium'], 2: current_lang['hard'], 3: current_lang['expert'], 4: current_lang['unbeatable']}
+        difficulty = {0: current_lang['easy'],
+                      1: current_lang['medium'],
+                      2: current_lang['hard'],
+                      3: current_lang['expert'],
+                      4: current_lang['unbeatable']}
         game.get_mouse_click()
         game.get_mouse_pos()
         game.background_display()
-        game.message_display(current_lang['title'], 'Mistral', 40, game.colors['blue'], (game.center[0], 85))
-        game.message_display(f"{current_lang['difficulty']}:", 'Mistral', 20, game.colors['blue'], (game.center[0], game.center[1] - 58))
-        game.message_display(f"{difficulty[bot.difficulty].upper()}", 'Mistral', 18, game.colors['blue'], (game.center[0], game.center[1] - 35))
+        game.message_display(current_lang['title'], 40, game.colors['blue'], (game.center[0], 85))
+        game.message_display(f"{current_lang['difficulty']}:", 20, game.colors['blue'], (game.center[0], game.center[1] - 58))
+        game.message_display(f"{difficulty[bot.difficulty].upper()}", 18, game.colors['blue'], (game.center[0], game.center[1] - 35))
         game.button_display(f"{current_lang['change'].upper()}", game.center[0] + 80, game.center[1] - 47, 50, 30, bot.difficulty_up)
-        game.message_display(f"{current_lang['sign']}:", 'Mistral', 20, game.colors['blue'], (game.center[0], game.center[1] + 2))
-        game.message_display(f"{player.sign}", 'Mistral', 18, game.colors['blue'], (game.center[0], game.center[1] + 24))
+        game.message_display(f"{current_lang['sign']}:", 20, game.colors['blue'], (game.center[0], game.center[1] + 2))
+        game.message_display(f"{player.sign}", 18, game.colors['blue'], (game.center[0], game.center[1] + 24))
         game.button_display(f"{current_lang['change'].upper()}", game.center[0] + 80, game.center[1] + 10, 50, 30, player.sign_change)
-        game.message_display(f"{current_lang['language']}:", 'Mistral', 20, game.colors['blue'], (game.center[0], game.center[1] + 60))
-        game.message_display(f"{current_lang['current_language'].upper()}", 'Mistral', 18, game.colors['blue'], (game.center[0], game.center[1] + 82))
+        game.message_display(f"{current_lang['language']}:", 20, game.colors['blue'], (game.center[0], game.center[1] + 60))
+        game.message_display(f"{current_lang['current_language'].upper()}", 18, game.colors['blue'], (game.center[0], game.center[1] + 82))
         game.button_display(f"{current_lang['change'].upper()}", game.center[0] + 80, game.center[1] + 70, 50, 30, lang_change)
         if player.sign == 'X':
             bot.sign = 'O'
@@ -104,11 +108,11 @@ def end(board_list: list, state: str, win: list):
         game.get_mouse_pos()
 
         if state == current_lang['tie'].upper():
-            game.message_display(state.capitalize(), 'Mistral', 40, game.colors['blue'], (game.center[0] + len(state) // 2, game.center[1] + 100))
+            game.message_display(state.capitalize(), 40, game.colors['blue'], (game.center[0] + len(state) // 2, game.center[1] + 100))
         elif state == current_lang['win'].upper():
-            game.message_display(state.capitalize(), 'Mistral', 40, game.colors['green'], (game.center[0] + len(state) // 2, game.center[1] + 100))
+            game.message_display(state.capitalize(), 40, game.colors['green'], (game.center[0] + len(state) // 2, game.center[1] + 100))
         elif state == current_lang['lost'].upper():
-            game.message_display(state.capitalize(), 'Mistral', 40, game.colors['red'], (game.center[0] + len(state) // 2, game.center[1] + 100))
+            game.message_display(state.capitalize(), 40, game.colors['red'], (game.center[0] + len(state) // 2, game.center[1] + 100))
 
         if win == [0, 1, 2]:
             game.win_line((135, 225), (315, 225))
@@ -126,6 +130,7 @@ def end(board_list: list, state: str, win: list):
             game.win_line((135, 80), (315, 255))
         elif win == [0, 4, 8]:
             game.win_line((315, 80), (135, 255))
+
         game.button_display(f"{current_lang['menu'].upper()}", game.center[0] - 140, game.center[1] + 115, 80, 60, main)
         game.button_display(f"{current_lang['again'].upper()}", game.center[0] + 90, game.center[1] + 115, 80, 60, again)
         game.events()
@@ -154,13 +159,17 @@ def lang_change():
 
 
 lang = 'english'
-current_lang = language[lang]  
+current_lang = language[lang]
 board = Board()
 player = Player()
 bot = Bot(board.win_combo)
-difficulty = {0: current_lang['easy'], 1: current_lang['medium'], 2: current_lang['hard'], 3: current_lang['expert'], 4: current_lang['unbeatable']}
+difficulty = {0: current_lang['easy'],
+              1: current_lang['medium'],
+              2: current_lang['hard'],
+              3: current_lang['expert'],
+              4: current_lang['unbeatable']}
 game = Game()
-game.init(current_lang)
+game.init(current_lang, 100, (0, 0))
 
 if __name__ == "__main__":
     main()

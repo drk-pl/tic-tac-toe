@@ -4,16 +4,17 @@ import sys
 import os
 
 
-def resource_path(relative_path):
+def resource_path(relative_path, sub):
     try:
-        base_path = os.path.join(sys._MEIPASS, 'img')
+        base_path = os.path.join(sys._MEIPASS, sub)
     except Exception:
-        base_path = os.path.abspath(os.path.join("..", "img"))
+        base_path = os.path.abspath(os.path.join("..", sub))
 
     return os.path.join(base_path, relative_path)
 
 
-background = resource_path('background.jpg')
+background = resource_path('background.jpg', 'img')
+font = resource_path('kalam.ttf', 'font')
 
 
 class Game:
@@ -37,7 +38,12 @@ class Game:
         self.__mouse_click = ()
         self.__images = {'background': self.__pygame.image.load(background)}
         self.__clock = self.__pygame.time.Clock()
-        self.__font_type = 'Mistral'
+        self.__font_type = font
+        self.__fields_pos = []
+        self.__field_size = ()
+        self.__board_size = 0
+        self.__board_pos = ()
+        self.__board_fields_count = []
 
     @property
     def mouse_pos(self) -> tuple:
@@ -71,10 +77,15 @@ class Game:
     def background_display(self):
         self.__screen.blit(self.__images['background'], (0, 0))
 
-    def init(self, lang: dict):
+    def init(self, lang: dict, board_size: int, board_pos: tuple, board_fields_count=(3, 3)):
         self.__pygame.init()
         self.__screen = self.__pygame.display.set_mode((self.__resolution['width'], self.__resolution['height']))
         self.__pygame.display.set_caption(lang['title'])
+        self.__board_size = board_size
+        self.__board_pos = board_pos
+        self.__board_fields_count = board_fields_count
+        self.__get_fields_pos()
+        self.__get_grid_pos()
 
     def caption_change(self, lang: dict):
         self.__pygame.display.set_caption(lang['title'])
@@ -83,21 +94,57 @@ class Game:
         self.__pygame.draw.line(self.__screen, self.__colors['red'], start_pos, end_pos, 4)
 
     def fill_board(self, board: list):
-        self.message_display(board[6], self.__font_type, 30, self.__colors['blue'], (self.__center[0] - 60, self.__center[1] - 90))
-        self.message_display(board[3], self.__font_type, 30, self.__colors['blue'], (self.__center[0] - 60, self.__center[1] - 30))
-        self.message_display(board[0], self.__font_type, 30, self.__colors['blue'], (self.__center[0] - 60, self.__center[1] + 30))
-        self.message_display(board[7], self.__font_type, 30, self.__colors['blue'], (self.__center[0], self.__center[1] - 90))
-        self.message_display(board[4], self.__font_type, 30, self.__colors['blue'], (self.__center[0], self.__center[1] - 30))
-        self.message_display(board[1], self.__font_type, 30, self.__colors['blue'], (self.__center[0], self.__center[1] + 30))
-        self.message_display(board[8], self.__font_type, 30, self.__colors['blue'], (self.__center[0] + 60, self.__center[1] - 90))
-        self.message_display(board[5], self.__font_type, 30, self.__colors['blue'], (self.__center[0] + 60, self.__center[1] - 30))
-        self.message_display(board[2], self.__font_type, 30, self.__colors['blue'], (self.__center[0] + 60, self.__center[1] + 30))
+        self.message_display(board[6], 30, self.__colors['blue'], (self.__center[0] - 60, self.__center[1] - 90))
+        self.message_display(board[3], 30, self.__colors['blue'], (self.__center[0] - 60, self.__center[1] - 30))
+        self.message_display(board[0], 30, self.__colors['blue'], (self.__center[0] - 60, self.__center[1] + 30))
+        self.message_display(board[7], 30, self.__colors['blue'], (self.__center[0], self.__center[1] - 90))
+        self.message_display(board[4], 30, self.__colors['blue'], (self.__center[0], self.__center[1] - 30))
+        self.message_display(board[1], 30, self.__colors['blue'], (self.__center[0], self.__center[1] + 30))
+        self.message_display(board[8], 30, self.__colors['blue'], (self.__center[0] + 60, self.__center[1] - 90))
+        self.message_display(board[5], 30, self.__colors['blue'], (self.__center[0] + 60, self.__center[1] - 30))
+        self.message_display(board[2], 30, self.__colors['blue'], (self.__center[0] + 60, self.__center[1] + 30))
 
     def draw_board(self):
         self.__pygame.draw.line(self.__screen, self.__colors['blue'], (self.__center[0] - 30, self.__center[1] - 120), (self.__center[0] - 30, self.__center[1] + 60), 4)
         self.__pygame.draw.line(self.__screen, self.__colors['blue'], (self.__center[0] + 30, self.__center[1] - 120), (self.__center[0] + 30, self.__center[1] + 60), 4)
         self.__pygame.draw.line(self.__screen, self.__colors['blue'], (self.__center[0] - 90, self.__center[1] - 60), (self.__center[0] + 90, self.__center[1] - 60), 4)
         self.__pygame.draw.line(self.__screen, self.__colors['blue'], (self.__center[0] - 90, self.__center[1]), (self.__center[0] + 90, self.__center[1]), 4)
+
+    def draw_board_2(self):
+        pass
+
+    def __get_fields_pos(self):
+        field_size = (self.__board_size // self.__board_fields_count[0], self.__board_size // self.__board_fields_count[1])
+        fields_pos = []
+        offset = 0
+        for row in range(self.__board_fields_count[1]):
+            current_field_position = (self.__board_pos[0], self.__board_pos[1] + offset)
+            for field in range(self.__board_fields_count[0]):
+                current_field_position = (current_field_position[0], current_field_position[1])
+                fields_pos.append(current_field_position)
+                current_field_position = (current_field_position[0] + field_size[0], current_field_position[1])
+            offset += field_size[1]
+        self.__fields_pos = fields_pos
+        self.__field_size = field_size
+
+    def __get_grid_pos(self):
+        x_left = self.__fields_pos[0][0]
+        x_right = self.__fields_pos[0][0] + self.__board_size
+        y_high = self.__fields_pos[0][1]
+        y_low = self.__fields_pos[0][1] + self.__board_size
+        grid_pos = []
+        x_offset = self.__field_size[0]
+        y_offset = self.__field_size[1]
+        x_pos = 0
+        y_pos = 0
+        for line in range(self.__board_fields_count[1] - 1):
+            x_pos += x_offset
+            grid_pos.append(((x_pos, y_high), (x_pos, y_low)))
+        for line in range(self.__board_fields_count[0] - 1):
+            y_pos += y_offset
+            grid_pos.append(((x_left, y_pos), (x_right, y_pos)))
+        print(grid_pos)
+        self.__grid_pos = grid_pos
 
     def events(self):
         events = self.__pygame.event.get()
@@ -120,8 +167,8 @@ class Game:
         self.button_display('', self.__center[0] + 30, self.__center[1] - 60, 60, 60, board.update_board, args=(5, player_sign))
         self.button_display('', self.__center[0] + 30, self.__center[1], 60, 60, board.update_board, args=(2, player_sign))
 
-    def message_display(self, text, font_type, size, clr, pos):
-        my_font = self.__pygame.font.SysFont(font_type, size)
+    def message_display(self, text: str, size: int, clr: tuple, pos: tuple):
+        my_font = self.__pygame.font.Font(self.__font_type, size)
         label = my_font.render(text, 1, clr)
         label_rect = label.get_rect(center=pos)
         self.__screen.blit(label, label_rect)
@@ -129,18 +176,21 @@ class Game:
     def button_display(self, name: str, x: int, y: int, w: int, h: int, fun, args=None):
         text = h // 2
         if x < self.__mouse_pos[0] < x + w and y < self.__mouse_pos[1] < y + h:
-            self.message_display(name, self.__font_type, int(text + text * 0.2), self.__colors['red'], (x + w / 2, y + h / 3))
+            self.message_display(name, int(text + text * 0.2), self.__colors['red'], (x + w / 2, y + h / 3))
             if self.__mouse_click[0] == 1:
                 br = False
                 while not br:
                     events = self.__pygame.event.get()
+                    self.get_mouse_pos()
                     for e in events:
-                        if e.type == MOUSEBUTTONUP:
+                        if e.type == MOUSEBUTTONUP and x < self.__mouse_pos[0] < x + w and y < self.__mouse_pos[1] < y + h:
                             if args:
                                 fun(*args)
                                 br = True
                             else:
                                 fun()
                                 br = True
+                        else:
+                            br = True
         else:
-            self.message_display(name, self.__font_type, text, self.__colors['blue'], (x + w / 2, y + h / 3))
+            self.message_display(name, text, self.__colors['blue'], (x + w / 2, y + h / 3))

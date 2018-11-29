@@ -19,20 +19,20 @@ font = resource_path('kalam.ttf', 'font')
 
 class Game:
 
+    __colors = {'white': (255, 255, 255),
+                'black': (0, 0, 0),
+                'red': (255, 0, 0),
+                'gray': (183, 193, 204),
+                'yellow': (249, 217, 54),
+                'blue': (0, 15, 85),
+                'green': (50, 205, 50)}
+
+    __resolution = {'width': 450,
+                    'height': 399}
+
     def __init__(self):
         self.__pygame = pygame
-        self.__resolution = {'width': 450,
-                             'height': 399}
         self.__center = (self.__resolution['width'] // 2, self.__resolution['height'] // 2)
-        self.__colors = {'white': (255, 255, 255),
-                         'black': (0, 0, 0),
-                         'red': (255, 0, 0),
-                         'gray': (183, 193, 204),
-                         'yellow': (249, 217, 54),
-                         'blue': (0, 15, 85),
-                         'green': (50, 205, 50)}
-        self.__message = ''
-        self.__button = ''
         self.__screen = ''
         self.__mouse_pos = ()
         self.__mouse_click = ()
@@ -44,6 +44,9 @@ class Game:
         self.__board_size = 0
         self.__board_pos = ()
         self.__board_fields_count = []
+        self.__fps = 60
+        self.__win_combo = []
+        self.__initialized = False
 
     @property
     def mouse_pos(self) -> tuple:
@@ -53,10 +56,6 @@ class Game:
     def mouse_click(self) -> tuple:
         return self.__mouse_click
 
-    @mouse_click.setter
-    def mouse_click(self, val: tuple):
-        self.__mouse_click = val
-
     @property
     def colors(self) -> dict:
         return self.__colors
@@ -65,30 +64,104 @@ class Game:
     def center(self) -> tuple:
         return self.__center
 
-    def screen_fill(self, clr):
-        self.__screen.fill(clr)
+    @property
+    def fps(self) -> int:
+        return self.__fps
 
-    def get_mouse_pos(self):
-        self.__mouse_pos = self.__pygame.mouse.get_pos()
+    @fps.setter
+    def fps(self, new_fps: int):
+        self.__fps = new_fps
 
-    def get_mouse_click(self):
-        self.__mouse_click = self.__pygame.mouse.get_pressed()
+    # private methods
 
-    def background_display(self):
-        self.__screen.blit(self.__images['background'], (0, 0))
+    def __get_fields_pos(self):
+        field_size = (self.__board_size // self.__board_fields_count[0], self.__board_size // self.__board_fields_count[1])
+        fields_pos = []
+        offset = 0
+        for row in range(self.__board_fields_count[1]):
+            current_field_position = (self.__board_pos[0], self.__board_pos[1] + offset)
+            for field in range(self.__board_fields_count[0]):
+                current_field_position = (current_field_position[0], current_field_position[1])
+                fields_pos.append(current_field_position)
+                current_field_position = (current_field_position[0] + field_size[0], current_field_position[1])
+            offset += field_size[1]
+        self.__fields_pos = fields_pos
+        self.__field_size = field_size
 
-    def init(self, lang: dict, board_size: int, board_pos: tuple, board_fields_count=(3, 3)):
+    def __get_grid_pos(self):
+        x_left = self.__fields_pos[0][0]
+        x_right = self.__fields_pos[0][0] + self.__board_size
+        y_high = self.__fields_pos[0][1]
+        y_low = self.__fields_pos[0][1] + self.__board_size
+        grid_pos_temp = []
+        x_offset = self.__field_size[0]
+        y_offset = self.__field_size[1]
+        x_pos = 0
+        y_pos = 0
+        for line in range(self.__board_fields_count[1] - 1):
+            x_pos += x_offset
+            grid_pos_temp.append({'start': (x_pos, y_high), 'end': (x_pos, y_low)})
+        for line in range(self.__board_fields_count[0] - 1):
+            y_pos += y_offset
+            grid_pos_temp.append({'start': (x_left, y_pos), 'end': (x_right, y_pos)})
+        self.__grid_pos = grid_pos_temp
+
+    def __get_win_line_pos(self):
+        pass
+
+    # public methods
+
+    def init(self, title: str, board_size: int, board_pos: tuple, win_combo: list, board_fields_count=(3, 3)):
+        """
+        This is public init class of Game class. It provides initial parameters for starting game.
+
+        :param title: screen caption
+        :param board_size: size of a playing board
+        :param board_pos: board position on the screen (pixel wise)
+        :param win_combo: list of win possibilities (stored in board class)
+        :param board_fields_count: dimensions of the board
+        :return: NoneType
+        """
         self.__pygame.init()
         self.__screen = self.__pygame.display.set_mode((self.__resolution['width'], self.__resolution['height']))
-        self.__pygame.display.set_caption(lang['title'])
+        self.__pygame.display.set_caption(title)
         self.__board_size = board_size
         self.__board_pos = board_pos
         self.__board_fields_count = board_fields_count
+        self.__win_combo = win_combo
+        self.__initialized = True
         self.__get_fields_pos()
         self.__get_grid_pos()
 
-    def caption_change(self, lang: dict):
-        self.__pygame.display.set_caption(lang['title'])
+    def update_mouse_pos(self):
+        """
+        Updates mouse position for internal use.
+        :return: NoneType
+        """
+        self.__mouse_pos = self.__pygame.mouse.get_pos()
+
+    def update_mouse_click(self):
+        """
+        Updates mouse pressed check for internal use.
+        :return: NoneType
+        """
+        self.__mouse_click = self.__pygame.mouse.get_pressed()
+
+    def background_display(self, position=(0, 0)):
+        """
+        Public method for blitting background image on window.
+        :param position: position of image to blit
+        :return: NoneType
+        """
+        self.__screen.blit(self.__images['background'], position)
+
+    def caption_change(self, title: str):
+        """
+        Method to change screen caption
+        :param title: new screen caption
+        :return: NoneType
+        """
+        self.__pygame.display.set_caption(title)
 
     def win_line(self, start_pos: tuple, end_pos: tuple):
         self.__pygame.draw.line(self.__screen, self.__colors['red'], start_pos, end_pos, 4)
@@ -111,40 +184,8 @@ class Game:
         self.__pygame.draw.line(self.__screen, self.__colors['blue'], (self.__center[0] - 90, self.__center[1]), (self.__center[0] + 90, self.__center[1]), 4)
 
     def draw_board_2(self):
-        pass
-
-    def __get_fields_pos(self):
-        field_size = (self.__board_size // self.__board_fields_count[0], self.__board_size // self.__board_fields_count[1])
-        fields_pos = []
-        offset = 0
-        for row in range(self.__board_fields_count[1]):
-            current_field_position = (self.__board_pos[0], self.__board_pos[1] + offset)
-            for field in range(self.__board_fields_count[0]):
-                current_field_position = (current_field_position[0], current_field_position[1])
-                fields_pos.append(current_field_position)
-                current_field_position = (current_field_position[0] + field_size[0], current_field_position[1])
-            offset += field_size[1]
-        self.__fields_pos = fields_pos
-        self.__field_size = field_size
-
-    def __get_grid_pos(self):
-        x_left = self.__fields_pos[0][0]
-        x_right = self.__fields_pos[0][0] + self.__board_size
-        y_high = self.__fields_pos[0][1]
-        y_low = self.__fields_pos[0][1] + self.__board_size
-        grid_pos = []
-        x_offset = self.__field_size[0]
-        y_offset = self.__field_size[1]
-        x_pos = 0
-        y_pos = 0
-        for line in range(self.__board_fields_count[1] - 1):
-            x_pos += x_offset
-            grid_pos.append(((x_pos, y_high), (x_pos, y_low)))
-        for line in range(self.__board_fields_count[0] - 1):
-            y_pos += y_offset
-            grid_pos.append(((x_left, y_pos), (x_right, y_pos)))
-        print(grid_pos)
-        self.__grid_pos = grid_pos
+        for line in self.__grid_pos:
+            self.__pygame.draw.line(self.__screen, self.__colors['blue'], line["start"], line["end"], 4)
 
     def events(self):
         events = self.__pygame.event.get()
@@ -154,7 +195,7 @@ class Game:
 
     def display_update(self):
         self.__pygame.display.update()
-        self.__clock.tick(60)
+        self.__clock.tick(self.__fps)
 
     def player_move(self, board: object, player_sign: str):
         self.button_display('', self.__center[0] - 90, self.__center[1] - 120, 60, 60, board.update_board, args=(6, player_sign))
@@ -181,7 +222,7 @@ class Game:
                 br = False
                 while not br:
                     events = self.__pygame.event.get()
-                    self.get_mouse_pos()
+                    self.update_mouse_pos()
                     for e in events:
                         if e.type == MOUSEBUTTONUP and x < self.__mouse_pos[0] < x + w and y < self.__mouse_pos[1] < y + h:
                             if args:

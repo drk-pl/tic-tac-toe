@@ -13,8 +13,8 @@ def game_loop(state=False):
         game.background_display()
         game.draw_board()
         game.fill_board(board.board)
-        game.get_mouse_pos()
-        game.get_mouse_click()
+        game.update_mouse_pos()
+        game.update_mouse_click()
         if player.sign == 'O':
             player_moves = len([x for x in board.board if x in player.sign])
             bot_moves = len([x for x in board.board if x in bot.sign])
@@ -76,8 +76,8 @@ def main_menu():
                       2: current_lang['hard'],
                       3: current_lang['expert'],
                       4: current_lang['unbeatable']}
-        game.get_mouse_click()
-        game.get_mouse_pos()
+        game.update_mouse_click()
+        game.update_mouse_pos()
         game.background_display()
         game.message_display(current_lang['title'], 40, game.colors['blue'], (game.center[0], 85))
         game.message_display(f"{current_lang['difficulty']}:", 20, game.colors['blue'], (game.center[0], game.center[1] - 58))
@@ -100,12 +100,11 @@ def main_menu():
 
 def end(board_list: list, state: str, win: list):
     while True:
-        game.screen_fill(game.colors['black'])
         game.background_display()
         game.draw_board()
         game.fill_board(board_list)
-        game.get_mouse_click()
-        game.get_mouse_pos()
+        game.update_mouse_click()
+        game.update_mouse_pos()
 
         if state == current_lang['tie'].upper():
             game.message_display(state.capitalize(), 40, game.colors['blue'], (game.center[0] + len(state) // 2, game.center[1] + 100))
@@ -155,7 +154,7 @@ def lang_change():
     elif lang == 'polish':
         lang = 'english'
     current_lang = language[lang]
-    game.caption_change(current_lang)
+    game.caption_change(current_lang['title'])
 
 
 lang = 'english'
@@ -169,7 +168,7 @@ difficulty = {0: current_lang['easy'],
               3: current_lang['expert'],
               4: current_lang['unbeatable']}
 game = Game()
-game.init(current_lang, 100, (0, 0))
+game.init(current_lang['title'], 180, (50, 200), board.win_combo)
 
 if __name__ == "__main__":
     main()

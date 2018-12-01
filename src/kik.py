@@ -11,15 +11,15 @@ def game_loop(state=False):
     move = 0
     while True:
         game.background_display()
-        game.draw_board_2()
-        game.fill_board_2(board.board)
+        game.draw_board()
+        game.fill_board(board.board)
         game.update_mouse_pos()
         game.update_mouse_click()
         if player.sign == 'O':
             player_moves = len([x for x in board.board if x in player.sign])
             bot_moves = len([x for x in board.board if x in bot.sign])
             if game_state:
-                game.player_move_2(board, player.sign)
+                game.player_move(board, player.sign)
             player_win = board.check_win(player.sign)
             tie = board.tie()
             if player_win:
@@ -55,7 +55,7 @@ def game_loop(state=False):
                 end(board.board, current_lang['tie'].upper(), [False])
                 game_state = False
             if game_state:
-                game.player_move_2(board, player.sign)
+                game.player_move(board, player.sign)
             player_win = board.check_win(player.sign)
             tie = board.tie()
             if player_win:
@@ -101,17 +101,17 @@ def main_menu():
 def end(board_list: list, state: str, win: list):
     while True:
         game.background_display()
-        game.draw_board_2()
-        game.fill_board_2(board_list)
+        game.draw_board()
+        game.fill_board(board_list)
         game.update_mouse_click()
         game.update_mouse_pos()
 
         if state == current_lang['tie'].upper():
-            game.message_display(state.capitalize(), 40, game.colors['blue'], (game.center[0] + len(state) // 2, game.center[1] + 100))
+            game.message_display(state.capitalize(), 40, game.colors['blue'], (game.center[0] + len(state) + 10 // 2, game.center[1] + 100))
         elif state == current_lang['win'].upper():
-            game.message_display(state.capitalize(), 40, game.colors['green'], (game.center[0] + len(state) // 2, game.center[1] + 100))
+            game.message_display(state.capitalize(), 40, game.colors['green'], (game.center[0] + len(state) + 10 // 2, game.center[1] + 100))
         elif state == current_lang['lost'].upper():
-            game.message_display(state.capitalize(), 40, game.colors['red'], (game.center[0] + len(state) // 2, game.center[1] + 100))
+            game.message_display(state.capitalize(), 40, game.colors['red'], (game.center[0] + len(state) + 10 // 2, game.center[1] + 100))
 
         if win == [0, 1, 2]:
             game.win_line((135, 225), (315, 225))
@@ -168,7 +168,7 @@ difficulty = {0: current_lang['easy'],
               3: current_lang['expert'],
               4: current_lang['unbeatable']}
 game = Game()
-game.init(current_lang['title'], 200, (game.center[0] - 100, game.center[1] - 120), board.win_combo)
+game.init(current_lang['title'], 200, (game.center[0] - 80, game.center[1] - 130), board.win_combo)
 
 if __name__ == "__main__":
     main()

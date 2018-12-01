@@ -47,6 +47,7 @@ class Game:
         self.__fps = 60
         self.__win_combo = []
         self.__initialized = False
+        self.__fields_order = [6, 7, 8, 3, 4, 5, 0, 1, 2]
 
     @property
     def mouse_pos(self) -> tuple:
@@ -87,6 +88,7 @@ class Game:
             offset += field_size[1]
         self.__fields_pos = fields_pos
         self.__field_size = field_size
+        print(self.__fields_pos)
 
     def __get_grid_pos(self):
         x_left = self.__fields_pos[0][0]
@@ -96,8 +98,8 @@ class Game:
         grid_pos_temp = []
         x_offset = self.__field_size[0]
         y_offset = self.__field_size[1]
-        x_pos = 0
-        y_pos = 0
+        x_pos = self.__board_pos[0]
+        y_pos = self.__board_pos[1]
         for line in range(self.__board_fields_count[1] - 1):
             x_pos += x_offset
             grid_pos_temp.append({'start': (x_pos, y_high), 'end': (x_pos, y_low)})
@@ -105,6 +107,7 @@ class Game:
             y_pos += y_offset
             grid_pos_temp.append({'start': (x_left, y_pos), 'end': (x_right, y_pos)})
         self.__grid_pos = grid_pos_temp
+        print(self.__grid_pos)
 
     def __get_win_line_pos(self):
         pass
@@ -177,6 +180,10 @@ class Game:
         self.message_display(board[5], 30, self.__colors['blue'], (self.__center[0] + 60, self.__center[1] - 30))
         self.message_display(board[2], 30, self.__colors['blue'], (self.__center[0] + 60, self.__center[1] + 30))
 
+    def fill_board_2(self, board: list):
+        for index, field_position in zip(self.__fields_order, self.__fields_pos):
+            self.message_display(board[index], self.__field_size[1], self.__colors['blue'], field_position)
+
     def draw_board(self):
         self.__pygame.draw.line(self.__screen, self.__colors['blue'], (self.__center[0] - 30, self.__center[1] - 120), (self.__center[0] - 30, self.__center[1] + 60), 4)
         self.__pygame.draw.line(self.__screen, self.__colors['blue'], (self.__center[0] + 30, self.__center[1] - 120), (self.__center[0] + 30, self.__center[1] + 60), 4)
@@ -207,6 +214,10 @@ class Game:
         self.button_display('', self.__center[0] + 30, self.__center[1] - 120, 60, 60, board.update_board, args=(8, player_sign))
         self.button_display('', self.__center[0] + 30, self.__center[1] - 60, 60, 60, board.update_board, args=(5, player_sign))
         self.button_display('', self.__center[0] + 30, self.__center[1], 60, 60, board.update_board, args=(2, player_sign))
+
+    def player_move_2(self, board: object, player_sign: str):
+        for index, field_position in zip(self.__fields_order, self.__fields_pos):
+            self.button_display('', field_position[0], field_position[1], self.__field_size[0], self.__field_size[1], board.update_board, args=(index, player_sign))
 
     def message_display(self, text: str, size: int, clr: tuple, pos: tuple):
         my_font = self.__pygame.font.Font(self.__font_type, size)

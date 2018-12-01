@@ -105,30 +105,13 @@ def end(board_list: list, state: str, win: list):
         game.fill_board(board_list)
         game.update_mouse_click()
         game.update_mouse_pos()
-
+        game.win_line(win)
         if state == current_lang['tie'].upper():
             game.message_display(state.capitalize(), 40, game.colors['blue'], (game.center[0] + len(state) + 10 // 2, game.center[1] + 100))
         elif state == current_lang['win'].upper():
             game.message_display(state.capitalize(), 40, game.colors['green'], (game.center[0] + len(state) + 10 // 2, game.center[1] + 100))
         elif state == current_lang['lost'].upper():
             game.message_display(state.capitalize(), 40, game.colors['red'], (game.center[0] + len(state) + 10 // 2, game.center[1] + 100))
-
-        if win == [0, 1, 2]:
-            game.win_line((135, 225), (315, 225))
-        elif win == [3, 4, 5]:
-            game.win_line((135, 165), (315, 165))
-        elif win == [6, 7, 8]:
-            game.win_line((135, 105), (315, 105))
-        elif win == [0, 3, 6]:
-            game.win_line((165, 80), (165, 255))
-        elif win == [1, 4, 7]:
-            game.win_line((225, 80), (225, 255))
-        elif win == [2, 5, 8]:
-            game.win_line((285, 80), (285, 255))
-        elif win == [2, 4, 6]:
-            game.win_line((135, 80), (315, 255))
-        elif win == [0, 4, 8]:
-            game.win_line((315, 80), (135, 255))
 
         game.button_display(f"{current_lang['menu'].upper()}", game.center[0] - 140, game.center[1] + 115, 80, 60, main)
         game.button_display(f"{current_lang['again'].upper()}", game.center[0] + 90, game.center[1] + 115, 80, 60, again)

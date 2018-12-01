@@ -46,6 +46,7 @@ class Game:
         self.__board_fields_count = []
         self.__fps = 60
         self.__win_combo = []
+        self.__win_line_pos = {}
         self.__initialized = False
         self.__fields_order = [6, 7, 8, 3, 4, 5, 0, 1, 2]
 
@@ -108,7 +109,13 @@ class Game:
         self.__grid_pos = grid_pos_temp
 
     def __get_win_line_pos(self):
-        pass
+        for win_combo in self.__win_combo:
+            if win_combo == [2, 4, 6] or win_combo == [0, 4, 8]:
+                offset = self.__field_size[1] // 2
+            else:
+                offset = 0
+            self.__win_line_pos[win_combo] = {'start': (self.__fields_pos[win_combo[0]][0], self.__fields_pos[win_combo[0][1] - offset]),
+                                              'end': (self.__fields_pos[win_combo[-1]][0], self.__fields_pos[win_combo[-1][1] - offset])}
 
     # public methods
 
@@ -133,6 +140,7 @@ class Game:
         self.__initialized = True
         self.__get_fields_pos()
         self.__get_grid_pos()
+        self.__get_win_line_pos()
 
     def update_mouse_pos(self):
         """
@@ -164,8 +172,8 @@ class Game:
         """
         self.__pygame.display.set_caption(title)
 
-    def win_line(self, start_pos: tuple, end_pos: tuple):
-        self.__pygame.draw.line(self.__screen, self.__colors['red'], start_pos, end_pos, 4)
+    def win_line(self, win_indexes):
+        self.__pygame.draw.line(self.__screen, self.__colors['red'], self.__win_line_pos[win_indexes]['start'], self.__win_line_pos[win_indexes]['end'], 4)
 
     def fill_board(self, board: list):
         field_offset = (self.__field_size[0] // 2, self.__field_size[1] // 2)

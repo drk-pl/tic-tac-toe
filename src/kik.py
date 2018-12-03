@@ -6,6 +6,11 @@ from src.classes.language_dict import language
 
 
 def game_loop(state=False):
+    """
+    Game loop function applying game logic
+    :param state:  State of the game
+    :return: NoneType
+    """
     game_state = state
     bot_win = False
     move = 0
@@ -69,6 +74,10 @@ def game_loop(state=False):
 
 
 def main_menu():
+    """
+    Function for displaying main menu screen
+    :return: NoneType
+    """
     global lang, difficulty
     while True:
         difficulty = {0: current_lang['easy'],
@@ -99,13 +108,22 @@ def main_menu():
 
 
 def end(board_list: list, state: str, win: list):
+    """
+    Function for displaying end game screen
+    :param board_list: list of board field values
+    :param state: state of the game (won,lost,tied)
+    :param win: list of indexes of win fields
+    :return: NoneType
+    """
     while True:
         game.background_display()
         game.draw_board()
         game.fill_board(board_list)
         game.update_mouse_click()
         game.update_mouse_pos()
-        game.win_line(win)
+        if len(win) > 1:
+            game.win_line(win)
+
         if state == current_lang['tie'].upper():
             game.message_display(state.capitalize(), 40, game.colors['blue'], (game.center[0] + len(state) + 10 // 2, game.center[1] + 100))
         elif state == current_lang['win'].upper():
@@ -120,17 +138,30 @@ def end(board_list: list, state: str, win: list):
 
 
 def main(reset=True):
+    """
+    Call main menu function with option to reset board field values
+    :param reset: Bool value for reset
+    :return: NoneType
+    """
     if reset:
         board.reset()
     main_menu()
 
 
 def again():
+    """
+    Function for starting game loop again after end screen with board fields values reset
+    :return: NoneType
+    """
     board.reset()
     game_loop(True)
 
 
 def lang_change():
+    """
+    Function for changing language of the game
+    :return: NoneType
+    """
     global lang, current_lang
     if lang == 'english':
         lang = 'polish'
@@ -150,8 +181,7 @@ difficulty = {0: current_lang['easy'],
               2: current_lang['hard'],
               3: current_lang['expert'],
               4: current_lang['unbeatable']}
-game = Game()
-game.init(current_lang['title'], 200, (game.center[0] - 80, game.center[1] - 130), board.win_combo)
+game = Game(current_lang['title'], 200, (130, 70), board.win_combo)
 
 if __name__ == "__main__":
     main()
